@@ -1,0 +1,9 @@
+{
+    "name": "Production project API",
+    "forwardPorts": [3030],
+    "dockerComposeFile": [
+        "../docker-compose.yml"
+    ],
+    "service": "api",
+    "workspaceFolder": "/home/dev"
+}
