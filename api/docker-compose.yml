@@ -26,7 +26,7 @@ services:
     ]
     volumes:
       - ./dbms/mariadb.cnf:/etc/mysql/mariadb.cnf
-      # - ./dbms/dbms-data:/var/lib/mysql
+      - ./dbms/dbms-data:/var/lib/mysql
     networks:
       - api-network
 
