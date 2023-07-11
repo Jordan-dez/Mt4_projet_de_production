@@ -4,8 +4,8 @@ import { SerializedErrorResponse } from "../entities/types/SerializedErrorRespon
 export class NotAuthorizedError extends CustomError {
     statusCode: number = 401;
 
-    constructor() {
-        super('Not Authorized');
+    constructor(message?: string) {
+        super(message || 'Unauthorized');
 
         Object.setPrototypeOf(this, NotAuthorizedError.prototype);
     }

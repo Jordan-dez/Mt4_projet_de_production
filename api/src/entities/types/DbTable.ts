@@ -1,0 +1,1 @@
+export type DbTable = 'users' | 'challenges' | 'results' | 'questions';

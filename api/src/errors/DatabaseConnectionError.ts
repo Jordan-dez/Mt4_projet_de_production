@@ -2,7 +2,7 @@ import { CustomError } from "./CustomError";
 import { SerializedErrorResponse } from "../entities/types/SerializedErrorResponse.interface";
 
 export class DatabaseConnectionError extends CustomError {
-    statusCode: number;
+    statusCode: number = 500;
 
     constructor() {
         super('Error connecting to database !!!');
