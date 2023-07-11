@@ -1,23 +1,31 @@
-export interface IChallenge{
-    uuid:number;
+import { IQuestionsCreate } from "./IQuestion";
+import { ChallengeStatus } from "./types/ChallengeStatus.enum";
+
+export interface IChallenge {
+    uuid:string;
     name:string;
-    creatorUuid:number;
-    status:string;
-    total:number;
+    creatorUuid:string;
     createdAt: Date;
+    description?:string;
+    status?:ChallengeStatus;
+    total?:number;
     updatedAt?: Date|null;
 }
 
 export interface IChallengeORM {
-    uuid:number;
+    uuid:string;
     name:string;
-    creator_uuid:number;
-    status:string;
-    total:number;
+    creator_uuid:string;
     created_at: Date;
-    updated_at: Date|null;
+    description?:string;
+    status?:ChallengeStatus;
+    total?:number;
+    updated_at?: Date|null;
 }
 
-export type IChallengeRO=Readonly<IChallenge>
-export type IChallengeCreate=Omit<IChallenge,'uuid'|'createdAt'|'updatedAt'|'creatorUuid'|'total'|'status'>
-export type IChallengeUpdate=Partial<IChallenge>
+export type IChallengeRO = Readonly<IChallenge>
+export type IChallengeORMCreate = Omit<IChallengeORM,'updated_at'>
+export type IChallengeORMUpdate = Partial<IChallengeORM>
+export type IChallengeORMRO = Readonly<IChallengeORM>
+export type IChallengeORMDelete = Pick<IChallengeORM,'uuid'>
+export type IChallengeRequestBody = Pick<IChallenge, 'name'|'description'> & {questions: IQuestionsCreate[]}
