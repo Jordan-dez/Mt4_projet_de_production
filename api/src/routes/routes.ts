@@ -6,6 +6,10 @@ import { Controller, ValidationService, FieldErrors, ValidateError, TsoaRoute, H
 import { AuthController } from './AuthController';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { ChallengeController } from './protected/ProtectedChallengeController';
+// WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+import { ProtectedSshController } from './protected/ProtectedSshController';
+// WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+import { ProtectedUserController } from './protected/ProtectedUserController';
 import { expressAuthentication } from './../auth/authentication';
 // @ts-ignore - no great way to install types from subpackage
 const promiseAny = require('promise.any');
@@ -64,14 +68,14 @@ const models: TsoaRoute.Models = {
         "type": {"dataType":"intersection","subSchemas":[{"ref":"Pick_IChallenge.name-or-description_"},{"dataType":"nestedObjectLiteral","nestedProperties":{"questions":{"dataType":"array","array":{"dataType":"refAlias","ref":"IQuestionsCreate"},"required":true}}}],"validators":{}},
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "Pick_IResult.challengeUuid-or-userUuid_": {
+    "Pick_IUserORM.firstname-or-lastname_": {
         "dataType": "refAlias",
-        "type": {"dataType":"nestedObjectLiteral","nestedProperties":{"challengeUuid":{"dataType":"string","required":true},"userUuid":{"dataType":"string","required":true}},"validators":{}},
+        "type": {"dataType":"nestedObjectLiteral","nestedProperties":{"firstname":{"dataType":"string"},"lastname":{"dataType":"string"}},"validators":{}},
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "IResultCreate": {
+    "IUpdateUserName": {
         "dataType": "refAlias",
-        "type": {"ref":"Pick_IResult.challengeUuid-or-userUuid_","validators":{}},
+        "type": {"ref":"Pick_IUserORM.firstname-or-lastname_","validators":{}},
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 };
@@ -238,14 +242,16 @@ export function RegisterRoutes(app: Router) {
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.post('/protected/challenge/result',
-            authenticateMiddleware([{"jwt":["Admin"]}]),
-            ...(fetchMiddlewares<RequestHandler>(ChallengeController)),
-            ...(fetchMiddlewares<RequestHandler>(ChallengeController.prototype.initializeStudentResult)),
+        app.get('/protected/ssh/:challengeUuid/test-connection',
+            authenticateMiddleware([{"jwt":[]}]),
+            ...(fetchMiddlewares<RequestHandler>(ProtectedSshController)),
+            ...(fetchMiddlewares<RequestHandler>(ProtectedSshController.prototype.testConnection)),
 
-            function ChallengeController_initializeStudentResult(request: any, response: any, next: any) {
+            function ProtectedSshController_testConnection(request: any, response: any, next: any) {
             const args = {
-                    body: {"in":"body","name":"body","required":true,"ref":"IResultCreate"},
+                    challengeUuid: {"in":"path","name":"challengeUuid","required":true,"dataType":"string"},
+                    serverName: {"in":"query","name":"serverName","required":true,"dataType":"string"},
+                    ipAddress: {"in":"query","name":"ipAddress","required":true,"dataType":"string"},
                     req: {"in":"request","name":"req","required":true,"dataType":"object"},
             };
 
@@ -255,10 +261,37 @@ export function RegisterRoutes(app: Router) {
             try {
                 validatedArgs = getValidatedArgs(args, request, response);
 
-                const controller = new ChallengeController();
+                const controller = new ProtectedSshController();
 
 
-              const promise = controller.initializeStudentResult.apply(controller, validatedArgs as any);
+              const promise = controller.testConnection.apply(controller, validatedArgs as any);
+              promiseHandler(controller, promise, response, undefined, next);
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.patch('/protected/user/:uuid',
+            ...(fetchMiddlewares<RequestHandler>(ProtectedUserController)),
+            ...(fetchMiddlewares<RequestHandler>(ProtectedUserController.prototype.updateUserName)),
+
+            function ProtectedUserController_updateUserName(request: any, response: any, next: any) {
+            const args = {
+                    uuid: {"in":"path","name":"uuid","required":true,"dataType":"string"},
+                    userName: {"in":"body","name":"userName","required":true,"ref":"IUpdateUserName"},
+                    req: {"in":"request","name":"req","required":true,"dataType":"object"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+
+                const controller = new ProtectedUserController();
+
+
+              const promise = controller.updateUserName.apply(controller, validatedArgs as any);
               promiseHandler(controller, promise, response, undefined, next);
             } catch (err) {
                 return next(err);

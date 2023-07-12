@@ -10,6 +10,8 @@ import { Roles } from "../entities/types/Roles.enum";
 import { v4 as uuid } from "uuid";
 import { NotFoundError } from "../errors/NotFoundError";
 import { IChallengeRO } from "../entities/IChallenge";
+import { IResultORMCreate, IResultRO } from "../entities/IResult";
+import { Repository } from "../database/repository/Repository";
 
 export const ISSUER = "api-auth";
 export const MAGIC_AUD = "api-magic"
@@ -71,21 +73,48 @@ export class AuthController {
             throw new NotFoundError(challengeUuid);
         }
 
-        const foundUser = await Crud.Read<IUserRO>({
+        let user: IUserRO|null = null;
+
+        user = await Crud.Read<IUserRO>({
             table: 'users',
             idKey: 'email',
             idValue: email,
             columns: ['uuid', 'email', 'role']
-        });
+        }) as IUserRO;
 
-        if(null === foundUser) {
+        if(null === user) {
+            user = {
+                uuid: uuid(),
+                email: email,
+                createdAt: new Date()
+            }
+
             await Crud.Create<IUserORM>({
                 table: 'users',
                 body: {
-                    uuid: uuid(),
-                    email,
-                    created_at: new Date()
+                    uuid: user.uuid,
+                    email: user.email,
+                    created_at: user.createdAt
                 }
+            });
+        }
+
+        const user_challenge_result: IResultRO = {
+            userUuid: user.uuid,
+            challengeUuid,
+            createdAt: new Date(),
+        };
+
+        const result = await Repository.GetResultByUserAndChallenge(user.uuid, challengeUuid);
+        
+        if (null === result) {
+            await Crud.Create<IResultORMCreate>({
+                body: {
+                    challenge_uuid: user_challenge_result.challengeUuid,
+                    user_uuid: user_challenge_result.userUuid,
+                    created_at: new Date()
+                },
+                table: 'results'
             });
         }
 
