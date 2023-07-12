@@ -2,9 +2,13 @@ import { Body, Get, Path, Post, Request, Res, Route, Security, TsoaResponse } fr
 import { IChallengeORM, IChallengeORMCreate, IChallengeRO, IChallengeRequestBody } from "../../entities/IChallenge";
 import { Crud } from "../../services/Crud";
 import { v4 as uuid } from "uuid";
-import { IQuestionsORM } from "../../entities/IQuestion";
+import { IQuestionsCreate, IQuestionsORM } from "../../entities/IQuestion";
 import { ChallengeStatus } from "../../entities/types/ChallengeStatus.enum";
 import { IResultCreate, IResultORMCreate, IResultRO } from "../../entities/IResult";
+import { NotFoundError } from "../../errors/NotFoundError";
+import { Repository } from "../../database/repository/Repository";
+
+const ADMIN_UUID = 'd0db4f33-473d-4696-9bf5-1ffff4b47537';
 
 @Route("/protected/challenge") 
 @Security('jwt', ['Admin'])
@@ -18,6 +22,7 @@ export class ChallengeController {
             const challenge: IChallengeRO = {
                 uuid: uuid(),
                 name,
+                description,
                 creatorUuid: uuid(),
                 status: ChallengeStatus.OPENED,
                 total: 12,
@@ -28,9 +33,9 @@ export class ChallengeController {
                 body: {
                     uuid: challenge.uuid,
                     name: challenge.name,
-                    creator_uuid: 'd0db4f33-473d-4696-9bf5-1ffff4b47537',
+                    creator_uuid: ADMIN_UUID,
                     status: challenge.status,
-                    total: challenge.total,
+                    total: this.getChallengeTotal(questions),
                     created_at: challenge.createdAt
                 },
                 table: 'challenges'
@@ -62,36 +67,16 @@ export class ChallengeController {
     @Get('/{uuid}')
     public async get(@Path() uuid: string): Promise<any>
     {
-        const challenge = await Crud.Read<IChallengeRO>({
-            table: 'challenges',
-            idKey: 'uuid',
-            idValue: uuid,
-            columns: ['uuid', 'name', `creator_uuid as creatorUuid`, 'description', 'status', 'total']
-        });
+        const challenge = await Repository.GetChallengeWithQuestions(uuid);
+
+        if (null === challenge) {
+            throw new NotFoundError(uuid);
+        }
 
         return challenge;
     }
 
-    @Post('/result')
-    public async initializeStudentResult(@Body() body: IResultCreate, @Request() req: any): Promise<{ok: boolean}|any>
-    {
-        const {challengeUuid} = body;
-        const { userUuid } = req.res.locals;
-        const user_challenge_result: IResultRO = {
-            userUuid,
-            challengeUuid,
-            createdAt: new Date(),
-        }
-
-        await Crud.Create<IResultORMCreate>({
-            body: {
-                challenge_uuid: user_challenge_result.challengeUuid,
-                user_uuid: user_challenge_result.userUuid,
-                created_at: new Date()
-            },
-            table: 'results'
-        })
-
-        return {ok: true};
+    private getChallengeTotal(questions: IQuestionsCreate[]) {
+        return questions.reduce((total, question) => total + question.note!, 0);
     }
 }

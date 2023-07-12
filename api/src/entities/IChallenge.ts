@@ -1,4 +1,4 @@
-import { IQuestionsCreate } from "./IQuestion";
+import { IQuestionsCreate, IQuestionsORMRO, IQuestionsRO } from "./IQuestion";
 import { ChallengeStatus } from "./types/ChallengeStatus.enum";
 
 export interface IChallenge {
@@ -29,3 +29,5 @@ export type IChallengeORMUpdate = Partial<IChallengeORM>
 export type IChallengeORMRO = Readonly<IChallengeORM>
 export type IChallengeORMDelete = Pick<IChallengeORM,'uuid'>
 export type IChallengeRequestBody = Pick<IChallenge, 'name'|'description'> & {questions: IQuestionsCreate[]}
+export type IChallengeWithQuestionsResult = IChallengeRO & IQuestionsRO;
+export type IChallengeWithQuestions = Omit<IChallengeRO, 'createdAt'> & {questions: Omit<IQuestionsRO, 'challengeUuid'|'createdAt'>[]};

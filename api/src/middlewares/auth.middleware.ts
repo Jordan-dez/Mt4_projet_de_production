@@ -22,7 +22,6 @@ export const JWTAuthHandler = async (req: Request, res: Response, next: NextFunc
           issuer: ISSUER,
           audience: ACCESS_AUD,
         });
-        console.log(decoded);
         
     } catch (err: any) {
       if (err?.name === "TokenExpiredError") {

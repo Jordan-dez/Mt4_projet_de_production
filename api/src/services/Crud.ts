@@ -3,6 +3,7 @@ import { DBConfig } from "../database/db.config";
 import { DbTable } from "../entities/types/DbTable";
 import { IUpdateResponse } from "../entities/types/IUpdateResponse";
 import { NotFoundError } from "../errors/NotFoundError";
+import { IResultORM } from "../entities/IResult";
 
 export class Crud {
     private static db: Pool = DBConfig.Connection;

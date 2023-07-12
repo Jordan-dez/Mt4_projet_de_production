@@ -153,24 +153,20 @@
 					}
 				]
 			},
-			"Pick_IResult.challengeUuid-or-userUuid_": {
+			"Pick_IUserORM.firstname-or-lastname_": {
 				"properties": {
-					"challengeUuid": {
+					"firstname": {
 						"type": "string"
 					},
-					"userUuid": {
+					"lastname": {
 						"type": "string"
 					}
 				},
-				"required": [
-					"challengeUuid",
-					"userUuid"
-				],
 				"type": "object",
 				"description": "From T, pick a set of properties whose keys are in the union K"
 			},
-			"IResultCreate": {
-				"$ref": "#/components/schemas/Pick_IResult.challengeUuid-or-userUuid_"
+			"IUpdateUserName": {
+				"$ref": "#/components/schemas/Pick_IUserORM.firstname-or-lastname_"
 			}
 		},
 		"securitySchemes": {
@@ -419,48 +415,92 @@
 				]
 			}
 		},
-		"/protected/challenge/result": {
-			"post": {
-				"operationId": "InitializeStudentResult",
+		"/protected/ssh/{challengeUuid}/test-connection": {
+			"get": {
+				"operationId": "TestConnection",
 				"responses": {
 					"200": {
 						"description": "Ok",
 						"content": {
 							"application/json": {
-								"schema": {
-									"anyOf": [
-										{
-											"properties": {
-												"ok": {
-													"type": "boolean"
-												}
-											},
-											"required": [
-												"ok"
-											],
-											"type": "object"
-										},
-										{}
-									]
-								}
+								"schema": {}
 							}
 						}
 					}
 				},
 				"security": [
 					{
-						"jwt": [
-							"Admin"
-						]
+						"jwt": []
 					}
 				],
-				"parameters": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "challengeUuid",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "query",
+						"name": "serverName",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "query",
+						"name": "ipAddress",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/protected/user/{uuid}": {
+			"patch": {
+				"operationId": "UpdateUserName",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"ok": {
+											"type": "boolean"
+										}
+									},
+									"required": [
+										"ok"
+									],
+									"type": "object"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "uuid",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
 				"requestBody": {
 					"required": true,
 					"content": {
 						"application/json": {
 							"schema": {
-								"$ref": "#/components/schemas/IResultCreate"
+								"$ref": "#/components/schemas/IUpdateUserName"
 							}
 						}
 					}

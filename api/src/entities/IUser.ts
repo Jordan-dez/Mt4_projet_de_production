@@ -27,3 +27,4 @@ export type IUserORMUpdate = Partial<IUserORM>;
 export type IUserOrmRO = Readonly<IUserORM>;
 export type IUserOrmCreate = Omit<IUserORM,|'updated_at'>;
 export type IUserORMDelete = Pick<IUserORM,'uuid'>;
+export type IUpdateUserName = Pick<IUserORM, 'firstname'|'lastname'>;
