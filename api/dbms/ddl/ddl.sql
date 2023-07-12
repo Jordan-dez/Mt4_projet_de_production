@@ -67,5 +67,3 @@ create table questions (
 SET FOREIGN_KEY_CHECKS = 1;
 
 insert into users (uuid, email, firstname, lastname, role, created_at) values ('d0db4f33-473d-4696-9bf5-1ffff4b47537', 'demahmed02@gmail.com', 'Super', 'Admin', 'Admin', '2023-07-10 22:05:47');
-
-insert into users (uuid, email, firstname, lastname, role, created_at) values ('d0db4f70-852r-4696-9bf5-2ffff4b47550', 'yajoah@gmail.com', 'Ahmed', 'DEM', 'Student', '2023-07-10 22:05:47');

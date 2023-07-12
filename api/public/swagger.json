@@ -470,15 +470,20 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"properties": {
-										"ok": {
-											"type": "boolean"
-										}
-									},
-									"required": [
-										"ok"
-									],
-									"type": "object"
+									"anyOf": [
+										{
+											"properties": {
+												"ok": {
+													"type": "boolean"
+												}
+											},
+											"required": [
+												"ok"
+											],
+											"type": "object"
+										},
+										{}
+									]
 								}
 							}
 						}
