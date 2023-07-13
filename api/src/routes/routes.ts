@@ -109,6 +109,7 @@ export function RegisterRoutes(app: Router) {
               const promise = controller.sendAdminMagicLink.apply(controller, validatedArgs as any);
               promiseHandler(controller, promise, response, undefined, next);
             } catch (err) {
+                console.error(err)
                 return next(err);
             }
         });

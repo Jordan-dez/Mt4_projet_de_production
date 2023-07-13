@@ -1,22 +1,26 @@
-import Express from "express";
+import express from "express";
 import { json } from "body-parser";
 import swaggerUi from 'swagger-ui-express';
 import { errorHandler } from "./middlewares/errors-handler.middleware";
 import { RegisterRoutes } from "./routes/routes";
 import { requestLogMiddleware } from "./services/Logging/log.middleware";
 import { JWTAuthHandler } from "./middlewares/auth.middleware";
+import cors from "cors";
 
 const PORT = process.env.PORT || 3030;
 
-const app = Express();
+const app = express();
 app.use(json());
 
 app.use(requestLogMiddleware('req'));
 app.use('/protected', JWTAuthHandler);
 
+// Enable CORS
+app.use(cors());
+
 RegisterRoutes(app);
 
-app.use(Express.static("public"));
+app.use(express.static("public"));
 app.use(
   "/docs",
   swaggerUi.serve,
@@ -26,7 +30,6 @@ app.use(
     },
   })
 );
-
 
 app.use(errorHandler);
 

@@ -35,6 +35,8 @@ export class AuthController {
             throw new BadRequestError('Email is missing in magic link request.');
         }
 
+        email = decodeURI(email);
+
         const user = await Crud.Read<IUserRO>({
             table: 'users',
             idKey: 'email',
